@@ -1,0 +1,104 @@
+# Windows build for df1nrr's fork: builds the Flutter desktop client (and, best-effort,
+# the .NET daemon for win-x64), uploads them as workflow artifacts, and also commits the
+# zips to the `windows-build-output` branch so they can be fetched with plain git.
+name: Windows build
+
+on:
+  push:
+    branches:
+      - windows-build
+  workflow_dispatch:
+
+permissions:
+  contents: write   # to push the output branch
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v4.x
+        with:
+          lfs: false
+
+      - name: Read pinned Flutter version
+        id: flutter-version
+        run: echo "version=$(tr -d '[:space:]' < client/openastroara_client/.flutter-version)" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2  # v2.x
+        with:
+          flutter-version: ${{ steps.flutter-version.outputs.version }}
+          channel: stable
+          cache: true
+
+      - name: Build client (release)
+        working-directory: client/openastroara_client
+        run: |
+          set -euo pipefail
+          mkdir -p "$GITHUB_WORKSPACE/out"
+          { flutter pub get && flutter build windows --release --dart-define=ARA_BUILD_DATE="$(date -u +%Y-%m-%d)"; } 2>&1 | tee "$GITHUB_WORKSPACE/out/client-build.log"
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68  # v4.x
+        with:
+          global-json-file: global.json
+
+      - name: Publish server (win-x64, best-effort)
+        id: server
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          dotnet publish OpenAstroAra.Server -c Release -r win-x64 --self-contained -o out/server-win-x64 2>&1 | tee out/server-build.log
+
+      - name: Package
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force out | Out-Null
+          $sha = (git rev-parse --short HEAD)
+          Compress-Archive -Path client/openastroara_client/build/windows/x64/runner/Release/* -DestinationPath "out/openastroara-client-windows-x64-$sha.zip"
+          if (Test-Path out/server-win-x64) {
+            Compress-Archive -Path out/server-win-x64/* -DestinationPath "out/openastroara-server-win-x64-$sha.zip"
+          }
+          Get-ChildItem out -File | Format-Table Name, Length
+
+      - name: Upload client artifact
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        with:
+          name: openastroara-client-windows-x64
+          path: client/openastroara_client/build/windows/x64/runner/Release/
+
+      - name: Upload server artifact
+        if: steps.server.outcome == 'success'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        with:
+          name: openastroara-server-win-x64
+          path: out/server-win-x64/
+
+      - name: Commit zips to windows-build-output branch
+        if: always()
+        run: |
+          set -euo pipefail
+          src_sha="$(git rev-parse HEAD)"
+          ws="$PWD"
+          mkdir -p ../publish && cd ../publish
+          git init -q -b windows-build-output
+          # split into <95 MB parts to stay under GitHub's 100 MB file limit
+          for f in "$ws"/out/*; do
+            [ -f "$f" ] || continue
+            if [ "$(stat -c %s "$f")" -gt 95000000 ]; then
+              split -b 90m -d "$f" "$(basename "$f").part"
+            else
+              cp "$f" .
+            fi
+          done
+          echo "source commit: $src_sha" > BUILD_INFO.txt
+          echo "run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> BUILD_INFO.txt
+          echo "job status: ${{ job.status }}, server publish: ${{ steps.server.outcome }}" >> BUILD_INFO.txt
+          git add -A
+          git -c user.name=github-actions -c user.email=github-actions@users.noreply.github.com commit -q -m "Windows build of $src_sha"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" windows-build-output
