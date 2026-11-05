@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm   # native arm64: natives + astap build in debian:trixie, no QEMU
     timeout-minutes: 60
     steps:
       - name: Checkout (with submodules)
@@ -38,27 +38,28 @@ jobs:
             -o ./publish/arm64 2>&1 | tee out/server-build.log
           file ./publish/arm64/OpenAstroAra.Server | grep -q aarch64
 
-      - name: Build astrometry natives (ERFA + SuperNOVAS) for arm64
+      - name: Build astrometry natives + astap_cli in Debian 13 Trixie (matches the Pi's glibc)
         run: |
           set -euo pipefail
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq gcc-aarch64-linux-gnu
-          CC=aarch64-linux-gnu-gcc ./scripts/build-astrometry-natives.sh ./publish/arm64
-          for lib in liberfa.so libsupernovas.so; do file "./publish/arm64/$lib" | grep -q 'ARM aarch64'; done
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1  # v3
-        with:
-          platforms: arm64
-
-      - name: Build astap_cli (ASTAP solver) for arm64
-        run: |
-          set -euo pipefail
-          docker run --rm --platform linux/arm64 -v "$PWD:/src" -w /src debian:trixie-slim bash -ec '
-            apt-get update -qq && apt-get install -y -qq --no-install-recommends fpc > /dev/null
+          docker run --rm -v "$PWD:/src" -w /src debian:trixie-slim bash -ec '
+            apt-get update -qq
+            apt-get install -y -qq --no-install-recommends gcc libc6-dev fpc file > /dev/null
+            gcc --version | head -1; ldd --version | head -1
+            scripts/build-astrometry-natives.sh publish/arm64
             scripts/build-astap-cli.sh publish/arm64'
           sudo chown -R "$(id -u):$(id -g)" publish/arm64
-          file ./publish/arm64/astap_cli | grep -q 'ARM aarch64'
+          for f in liberfa.so libsupernovas.so astap_cli; do file "./publish/arm64/$f" | grep -q 'ARM aarch64'; done
+
+      - name: Guard - native code must load on Trixie (glibc <= 2.41)
+        run: |
+          set -euo pipefail
+          bad=0
+          for f in publish/arm64/liberfa.so publish/arm64/libsupernovas.so publish/arm64/astap_cli publish/arm64/OpenAstroAra.Server; do
+            max=$(objdump -T "$f" | grep -o 'GLIBC_[0-9.]*' | sed 's/GLIBC_//' | sort -uV | tail -1)
+            echo "$f needs glibc $max"
+            if [ "$(printf '%s\n2.41\n' "$max" | sort -V | tail -1)" != "2.41" ]; then echo "::error::$f needs glibc $max (> 2.41, Trixie)"; bad=1; fi
+          done
+          exit $bad
 
       - name: Build .deb + tarball
         run: |
