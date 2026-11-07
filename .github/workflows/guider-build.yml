@@ -1,0 +1,88 @@
+# Builds open-astro/openastro-guider (headless, Alpaca-only PHD2) as an arm64 .deb for
+# Debian 13 Trixie / Raspberry Pi OS Trixie, natively on an arm64 runner inside a
+# debian:trixie container so the package's library dependencies match the Pi.
+# Outputs are uploaded as artifacts and committed to the `guider-build-output` branch.
+name: openastro-guider arm64 build
+
+on:
+  push:
+    branches:
+      - guider-build
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: openastro-guider branch/tag to build
+        default: main
+
+permissions:
+  contents: write   # to push the output branch
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04-arm
+    container: debian:trixie
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Install build dependencies
+        run: |
+          set -euo pipefail
+          apt-get update -qq
+          DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends \
+            ca-certificates git sudo file python3 \
+            build-essential cmake pkg-config debhelper dpkg-dev ccache ninja-build \
+            libwxgtk3.2-dev libcfitsio-dev libopencv-dev libv4l-dev \
+            libcurl4-gnutls-dev libeigen3-dev libgtest-dev zlib1g-dev libx11-dev libnova-dev
+          git config --global --add safe.directory '*'
+
+      - name: Checkout openastro-guider
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v4.x
+        with:
+          repository: open-astro/openastro-guider
+          ref: ${{ inputs.ref || 'main' }}
+          path: guider/openastro-guider
+          submodules: recursive
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Build .deb
+        working-directory: guider/openastro-guider
+        run: |
+          set -euo pipefail
+          mkdir -p "$GITHUB_WORKSPACE/out"
+          ./build-deb.sh 2>&1 | tee "$GITHUB_WORKSPACE/out/guider-build.log"
+          ls -la ..
+          cp ../openastro-guider-*-arm64.deb "$GITHUB_WORKSPACE/out/"
+          echo "guider commit: $(git rev-parse HEAD)" > "$GITHUB_WORKSPACE/out/BUILD_INFO.txt"
+
+      - name: Upload .deb artifact
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        with:
+          name: openastro-guider-arm64-deb
+          path: out/openastro-guider-*-arm64.deb
+
+      - name: Commit outputs to guider-build-output branch
+        if: always()
+        env:
+          TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$GITHUB_WORKSPACE/out" ../publish-out && cd ../publish-out
+          git init -q -b guider-build-output
+          for f in "$GITHUB_WORKSPACE"/out/*; do
+            [ -f "$f" ] || continue
+            if [ "$(stat -c %s "$f")" -gt 95000000 ]; then
+              split -b 90m -d "$f" "$(basename "$f").part"
+            else
+              cp "$f" .
+            fi
+          done
+          { echo "run: $RUN_URL"; echo "job status: $JOB_STATUS"; } >> BUILD_INFO.txt
+          git add -A
+          git -c user.name=github-actions -c user.email=github-actions@users.noreply.github.com commit -q -m "openastro-guider arm64 build"
+          git push -f "https://x-access-token:${TOKEN}@github.com/${REPO}.git" guider-build-output
