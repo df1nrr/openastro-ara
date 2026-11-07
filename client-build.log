@@ -1,0 +1,87 @@
+Resolving dependencies...
+Downloading packages...
+  archive 4.3.0 (4.6.0 available)
+  cli_util 0.4.2 (0.6.0 available)
+  code_assets 2.1.0 (2.2.0 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  dbus 0.7.15 (0.8.0 available)
+  equatable 2.1.0 (3.0.0 available)
+  flutter_riverpod 3.4.3 (3.5.0 available)
+  geolocator_android 5.1.1 (5.2.1 available)
+  geolocator_apple 2.3.14 (2.4.3 available)
+  geolocator_platform_interface 4.4.0 (4.4.1 available)
+  gsettings 0.2.8 (0.2.9 available)
+  image 4.10.1 (4.12.0 available)
+  jni 1.0.3 (1.1.2 available)
+  jni_flutter 1.0.3 (1.0.4+1 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  objective_c 9.6.0 (9.6.3 available)
+  petitparser 7.0.2 (7.1.0 available)
+  posix 6.5.2 (6.5.4 available)
+  riverpod 3.4.3 (3.5.0 available)
+  synchronized 3.4.2 (3.6.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  vector_math 2.4.3 (2.4.4 available)
+  vm_service 15.3.0 (15.4.0 available)
+  web 1.1.1 (1.1.2 available)
+  webview_all 1.4.7 (1.4.12 available)
+  webview_all_android 1.4.7 (1.4.12 available)
+  webview_all_linux 1.4.7 (1.4.12 available)
+  webview_all_ohos 1.4.7 (1.4.12 available)
+  webview_all_web 1.4.7 (1.4.12 available)
+  webview_all_windows 1.4.7 (1.4.12 available)
+  webview_all_wkwebview 1.4.7 (1.4.12 available)
+  webview_platform_interface 1.4.7 (1.4.12 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+33 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+"pt": 706 untranslated message(s).
+To see a detailed report, use the untranslated-messages-file 
+option in the l10n.yaml file:
+untranslated-messages-file: desiredFileName.txt
+<other option>: <other selection> 
+
+
+This will generate a JSON format file containing all messages that 
+need to be translated.
+Resolving dependencies...
+Downloading packages...
+  archive 4.3.0 (4.6.0 available)
+  cli_util 0.4.2 (0.6.0 available)
+  code_assets 2.1.0 (2.2.0 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  dbus 0.7.15 (0.8.0 available)
+  equatable 2.1.0 (3.0.0 available)
+  flutter_riverpod 3.4.3 (3.5.0 available)
+  geolocator_android 5.1.1 (5.2.1 available)
+  geolocator_apple 2.3.14 (2.4.3 available)
+  geolocator_platform_interface 4.4.0 (4.4.1 available)
+  gsettings 0.2.8 (0.2.9 available)
+  image 4.10.1 (4.12.0 available)
+  jni 1.0.3 (1.1.2 available)
+  jni_flutter 1.0.3 (1.0.4+1 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  objective_c 9.6.0 (9.6.3 available)
+  petitparser 7.0.2 (7.1.0 available)
+  posix 6.5.2 (6.5.4 available)
+  riverpod 3.4.3 (3.5.0 available)
+  synchronized 3.4.2 (3.6.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  vector_math 2.4.3 (2.4.4 available)
+  vm_service 15.3.0 (15.4.0 available)
+  web 1.1.1 (1.1.2 available)
+  webview_all 1.4.7 (1.4.12 available)
+  webview_all_android 1.4.7 (1.4.12 available)
+  webview_all_linux 1.4.7 (1.4.12 available)
+  webview_all_ohos 1.4.7 (1.4.12 available)
+  webview_all_web 1.4.7 (1.4.12 available)
+  webview_all_windows 1.4.7 (1.4.12 available)
+  webview_all_wkwebview 1.4.7 (1.4.12 available)
+  webview_platform_interface 1.4.7 (1.4.12 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+33 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Building Windows application...                                   294.5s
+√ Built build\windows\x64\runner\Release\openastroara.exe
