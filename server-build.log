@@ -1,0 +1,43 @@
+  Determining projects to restore...
+  Restored /home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Fits/OpenAstroAra.Fits.csproj (in 1.9 sec).
+  Restored /home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Core/OpenAstroAra.Core.csproj (in 2.01 sec).
+  Restored /home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Astrometry/OpenAstroAra.Astrometry.csproj (in 2.01 sec).
+  Restored /home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Stretch/OpenAstroAra.Stretch.csproj (in 1.35 sec).
+  Restored /home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Image/OpenAstroAra.Image.csproj (in 1.47 sec).
+  Restored /home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Equipment/OpenAstroAra.Equipment.csproj (in 3.63 sec).
+  Restored /home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.PlateSolving/OpenAstroAra.PlateSolving.csproj (in 1.7 sec).
+  Restored /home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Profile/OpenAstroAra.Profile.csproj (in 60 ms).
+  Restored /home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Sequencer/OpenAstroAra.Sequencer.csproj (in 76 ms).
+  Restored /home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Server/OpenAstroAra.Server.csproj (in 683 ms).
+  OpenAstroAra.Stretch -> /home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Stretch/bin/Release/net10.0/OpenAstroAra.Stretch.dll
+  OpenAstroAra.Fits -> /home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Fits/bin/Release/net10.0/OpenAstroAra.Fits.dll
+  OpenAstroAra.Core -> /home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Core/bin/Release/net10.0/OpenAstroAra.Core.dll
+  The package OpenAstroAra.Core.3.2.0.9001 is missing a readme. Go to https://aka.ms/nuget/authoring-best-practices/readme to learn why package readmes are important.
+  Successfully created package '/home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Core/publish/OpenAstroAra.Core.3.2.0.9001.nupkg'.
+  Successfully created package '/home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Core/publish/OpenAstroAra.Core.3.2.0.9001.snupkg'.
+  OpenAstroAra.Profile -> /home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Profile/bin/Release/net10.0/OpenAstroAra.Profile.dll
+  The package OpenAstroAra.Profile.3.2.0.9001 is missing a readme. Go to https://aka.ms/nuget/authoring-best-practices/readme to learn why package readmes are important.
+  Successfully created package '/home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Profile/publish/OpenAstroAra.Profile.3.2.0.9001.nupkg'.
+  Successfully created package '/home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Profile/publish/OpenAstroAra.Profile.3.2.0.9001.snupkg'.
+  OpenAstroAra.Astrometry -> /home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Astrometry/bin/Release/net10.0/OpenAstroAra.Astrometry.dll
+  The package OpenAstroAra.Astrometry.3.2.0.9001 is missing a readme. Go to https://aka.ms/nuget/authoring-best-practices/readme to learn why package readmes are important.
+  Successfully created package '/home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Astrometry/publish/OpenAstroAra.Astrometry.3.2.0.9001.nupkg'.
+  Successfully created package '/home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Astrometry/publish/OpenAstroAra.Astrometry.3.2.0.9001.snupkg'.
+  OpenAstroAra.Image -> /home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Image/bin/Release/net10.0/OpenAstroAra.Image.dll
+  The package OpenAstroAra.Image.3.2.0.9001 is missing a readme. Go to https://aka.ms/nuget/authoring-best-practices/readme to learn why package readmes are important.
+  Successfully created package '/home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Image/publish/OpenAstroAra.Image.3.2.0.9001.nupkg'.
+  Successfully created package '/home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Image/publish/OpenAstroAra.Image.3.2.0.9001.snupkg'.
+  OpenAstroAra.Equipment -> /home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Equipment/bin/Release/net10.0/OpenAstroAra.Equipment.dll
+  The package OpenAstroAra.Equipment.3.2.0.9001 is missing a readme. Go to https://aka.ms/nuget/authoring-best-practices/readme to learn why package readmes are important.
+  Successfully created package '/home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Equipment/publish/OpenAstroAra.Equipment.3.2.0.9001.nupkg'.
+  Successfully created package '/home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Equipment/publish/OpenAstroAra.Equipment.3.2.0.9001.snupkg'.
+  OpenAstroAra.PlateSolving -> /home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.PlateSolving/bin/Release/net10.0/OpenAstroAra.PlateSolving.dll
+  The package OpenAstroAra.PlateSolving.3.2.0.9001 is missing a readme. Go to https://aka.ms/nuget/authoring-best-practices/readme to learn why package readmes are important.
+  Successfully created package '/home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.PlateSolving/publish/OpenAstroAra.PlateSolving.3.2.0.9001.nupkg'.
+  Successfully created package '/home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.PlateSolving/publish/OpenAstroAra.PlateSolving.3.2.0.9001.snupkg'.
+  OpenAstroAra.Sequencer -> /home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Sequencer/bin/Release/net10.0/OpenAstroAra.Sequencer.dll
+  The package OpenAstroAra.Sequencer.3.2.0.9001 is missing a readme. Go to https://aka.ms/nuget/authoring-best-practices/readme to learn why package readmes are important.
+  Successfully created package '/home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Sequencer/publish/OpenAstroAra.Sequencer.3.2.0.9001.nupkg'.
+  Successfully created package '/home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Sequencer/publish/OpenAstroAra.Sequencer.3.2.0.9001.snupkg'.
+  OpenAstroAra.Server -> /home/runner/work/openastro-ara/openastro-ara/OpenAstroAra.Server/bin/Release/net10.0/linux-arm64/OpenAstroAra.Server.dll
+  OpenAstroAra.Server -> /home/runner/work/openastro-ara/openastro-ara/publish/arm64/
