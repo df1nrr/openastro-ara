@@ -1,0 +1,98 @@
+# linux-arm64 server build for df1nrr's fork (Raspberry Pi 4/5, Debian 13 Trixie arm64).
+# Mirrors ci.yml's server-build publish + packaging steps, without the tests/Docker e2e.
+# Outputs: the .deb (install with `sudo apt install ./openastroara-server_*_arm64.deb`) and a
+# plain tarball of the publish dir; uploaded as artifacts and committed to `arm64-build-output`.
+name: arm64 server build
+
+on:
+  push:
+    branches:
+      - arm64-build
+  workflow_dispatch:
+
+permissions:
+  contents: write   # to push the output branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout (with submodules)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v4.x
+        with:
+          submodules: true  # third_party/erfa, supernovas, astap
+          lfs: false
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68  # v4.x
+        with:
+          global-json-file: global.json
+
+      - name: dotnet publish (linux-arm64, self-contained)
+        run: |
+          set -euo pipefail
+          mkdir -p out
+          dotnet publish OpenAstroAra.Server/OpenAstroAra.Server.csproj \
+            -c Release -r linux-arm64 --self-contained -p:PublishAot=false \
+            -o ./publish/arm64 2>&1 | tee out/server-build.log
+          file ./publish/arm64/OpenAstroAra.Server | grep -q aarch64
+
+      - name: Build astrometry natives (ERFA + SuperNOVAS) for arm64
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq gcc-aarch64-linux-gnu
+          CC=aarch64-linux-gnu-gcc ./scripts/build-astrometry-natives.sh ./publish/arm64
+          for lib in liberfa.so libsupernovas.so; do file "./publish/arm64/$lib" | grep -q 'ARM aarch64'; done
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1  # v3
+        with:
+          platforms: arm64
+
+      - name: Build astap_cli (ASTAP solver) for arm64
+        run: |
+          set -euo pipefail
+          docker run --rm --platform linux/arm64 -v "$PWD:/src" -w /src debian:trixie-slim bash -ec '
+            apt-get update -qq && apt-get install -y -qq --no-install-recommends fpc > /dev/null
+            scripts/build-astap-cli.sh publish/arm64'
+          sudo chown -R "$(id -u):$(id -g)" publish/arm64
+          file ./publish/arm64/astap_cli | grep -q 'ARM aarch64'
+
+      - name: Build .deb + tarball
+        run: |
+          set -euo pipefail
+          VERSION="0.0.0-dev-$(git rev-parse --short HEAD)"
+          packaging/build-deb.sh ./publish/arm64 "$VERSION" ./out
+          tar -C publish -czf "out/openastroara-server-linux-arm64-$(git rev-parse --short HEAD).tar.gz" arm64
+          ls -la out
+
+      - name: Upload .deb artifact
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        with:
+          name: openastroara-server-arm64-deb
+          path: out/openastroara-server_*_arm64.deb
+
+      - name: Commit outputs to arm64-build-output branch
+        if: always()
+        run: |
+          set -euo pipefail
+          src_sha="$(git rev-parse HEAD)"
+          ws="$PWD"
+          mkdir -p ../publish-out && cd ../publish-out
+          git init -q -b arm64-build-output
+          for f in "$ws"/out/*; do
+            [ -f "$f" ] || continue
+            if [ "$(stat -c %s "$f")" -gt 95000000 ]; then
+              split -b 90m -d "$f" "$(basename "$f").part"
+            else
+              cp "$f" .
+            fi
+          done
+          echo "source commit: $src_sha" > BUILD_INFO.txt
+          echo "run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> BUILD_INFO.txt
+          echo "job status: ${{ job.status }}" >> BUILD_INFO.txt
+          git add -A
+          git -c user.name=github-actions -c user.email=github-actions@users.noreply.github.com commit -q -m "arm64 build of $src_sha"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" arm64-build-output
