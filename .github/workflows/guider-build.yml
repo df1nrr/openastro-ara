@@ -52,6 +52,12 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$GITHUB_WORKSPACE/out"
+          # Stamp a dev version that sorts above the release it is built on and above every
+          # earlier build of ours: 2.2.0 -> 2.2.0.git20261118.2213.77ee9ab
+          base=$(grep -m1 -E '^[[:space:]]*[0-9]+\.[0-9]+\.[0-9]+' version.md | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          stamp="${base}.git$(TZ=UTC git log -1 --format=%cd --date=format-local:%Y%m%d.%H%M).$(git rev-parse --short HEAD)"
+          sed -i -E "0,/^[[:space:]]*[0-9]+\.[0-9]+\.[0-9]+[A-Za-z0-9._-]*[[:space:]]*$/s//${stamp}/" version.md
+          echo "deb version: $stamp"; grep -nE '^[0-9]+\.' version.md | head -2
           ./build-deb.sh 2>&1 | tee "$GITHUB_WORKSPACE/out/guider-build.log"
           ls -la ..
           cp ../openastro-guider-*-arm64.deb "$GITHUB_WORKSPACE/out/"
