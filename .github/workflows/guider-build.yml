@@ -20,7 +20,11 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-24.04-arm
-    container: debian:trixie
+    container:
+      image: debian:trixie
+      # test_algorithm_slot runs under `setarch -R` (personality syscall), which
+      # Docker's default seccomp profile refuses inside the container.
+      options: --security-opt seccomp=unconfined
     timeout-minutes: 90
     defaults:
       run:
