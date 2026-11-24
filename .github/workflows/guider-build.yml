@@ -33,7 +33,7 @@ jobs:
           DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends \
             ca-certificates git sudo file python3 \
             build-essential cmake pkg-config debhelper dpkg-dev ccache ninja-build \
-            libwxgtk3.2-dev libcfitsio-dev libopencv-dev libv4l-dev \
+            libwxgtk3.2-dev libcfitsio-dev libjpeg-dev libopencv-dev libv4l-dev \
             libcurl4-gnutls-dev libeigen3-dev libgtest-dev zlib1g-dev libx11-dev libnova-dev
           git config --global --add safe.directory '*'
 
