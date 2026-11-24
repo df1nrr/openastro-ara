@@ -55,14 +55,30 @@ jobs:
           set -euo pipefail
           dotnet publish OpenAstroAra.Server -c Release -r win-x64 --self-contained -o out/server-win-x64 2>&1 | tee out/server-build.log
 
-      - name: Package
+      - name: Package (each zip holds one top-level folder)
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force out | Out-Null
           $sha = (git rev-parse --short HEAD)
-          Compress-Archive -Path client/openastroara_client/build/windows/x64/runner/Release/* -DestinationPath "out/openastroara-client-windows-x64-$sha.zip"
+          # Stage under a named folder so extracting a zip never spills files beside it.
+          $client = "openastroara-client-windows-x64-$sha"
+          New-Item -ItemType Directory -Force "stage/client/$client" | Out-Null
+          Copy-Item -Recurse client/openastroara_client/build/windows/x64/runner/Release/* "stage/client/$client/"
+          Compress-Archive -Path "stage/client/$client" -DestinationPath "out/$client.zip"
           if (Test-Path out/server-win-x64) {
-            Compress-Archive -Path out/server-win-x64/* -DestinationPath "out/openastroara-server-win-x64-$sha.zip"
+            $server = "openastroara-server-win-x64-$sha"
+            New-Item -ItemType Directory -Force "stage/server/$server" | Out-Null
+            Copy-Item -Recurse out/server-win-x64/* "stage/server/$server/"
+            Compress-Archive -Path "stage/server/$server" -DestinationPath "out/$server.zip"
+          }
+          # Fail if any entry sits outside the single top-level folder.
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          foreach ($z in Get-ChildItem out -Filter *.zip) {
+            $top = [IO.Path]::GetFileNameWithoutExtension($z.Name)
+            $zip = [IO.Compression.ZipFile]::OpenRead($z.FullName)
+            $stray = $zip.Entries | Where-Object { -not ($_.FullName -replace '\\','/').StartsWith("$top/") }
+            $zip.Dispose()
+            if ($stray) { Write-Error "$($z.Name): entries outside $top/: $($stray.FullName -join ', ')"; exit 1 }
           }
           Get-ChildItem out -File | Format-Table Name, Length
 
@@ -70,14 +86,14 @@ jobs:
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         with:
           name: openastroara-client-windows-x64
-          path: client/openastroara_client/build/windows/x64/runner/Release/
+          path: stage/client/
 
       - name: Upload server artifact
         if: steps.server.outcome == 'success'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         with:
           name: openastroara-server-win-x64
-          path: out/server-win-x64/
+          path: stage/server/
 
       - name: Commit zips to windows-build-output branch
         if: always()
