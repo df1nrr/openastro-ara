@@ -1,0 +1,79 @@
+Resolving dependencies...
+Downloading packages...
+  android_file_picker 2.1.5 (2.2.1 available)
+  archive 4.6.0 (4.7.1 available)
+  cli_util 0.4.2 (0.6.1 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  cupertino_ui 1.1.6 (1.1.7 available)
+  dbus 0.7.15 (0.8.1 available)
+  file_picker 13.3.3 (13.4.1 available)
+  file_picker_darwin 2.5.1 (2.5.2 available)
+  file_picker_linux 2.0.4 (2.0.5 available)
+  file_picker_platform_interface 4.2.0 (4.3.0 available)
+  file_picker_web 4.2.1 (4.2.2 available)
+  gsettings 0.2.8 (0.2.9 available)
+  image 4.12.0 (4.13.1 available)
+  jni 1.1.2 (1.2.1 available)
+  jni_flutter 1.0.4+1 (1.1.0 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  material_ui 1.11.0 (1.11.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  upower 0.7.0 (0.8.0 available)
+  url_launcher_android 6.3.33 (6.3.35 available)
+  wakelock_plus 1.8.0 (1.8.2 available)
+  webview_all 1.5.0 (1.5.2 available)
+  webview_all_android 1.5.0 (1.5.2 available)
+  webview_all_linux 1.5.0 (1.5.2 available)
+  webview_all_ohos 1.5.0 (1.5.2 available)
+  webview_all_web 1.5.0 (1.5.2 available)
+  webview_all_windows 1.5.0 (1.5.2 available)
+  webview_all_wkwebview 1.5.0 (1.5.2 available)
+  webview_platform_interface 1.5.0 (1.5.2 available)
+Got dependencies!
+29 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+"pt": 2026 untranslated message(s).
+To see a detailed report, use the untranslated-messages-file 
+option in the l10n.yaml file:
+untranslated-messages-file: desiredFileName.txt
+<other option>: <other selection> 
+
+
+This will generate a JSON format file containing all messages that 
+need to be translated.
+Resolving dependencies...
+Downloading packages...
+  android_file_picker 2.1.5 (2.2.1 available)
+  archive 4.6.0 (4.7.1 available)
+  cli_util 0.4.2 (0.6.1 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  cupertino_ui 1.1.6 (1.1.7 available)
+  dbus 0.7.15 (0.8.1 available)
+  file_picker 13.3.3 (13.4.1 available)
+  file_picker_darwin 2.5.1 (2.5.2 available)
+  file_picker_linux 2.0.4 (2.0.5 available)
+  file_picker_platform_interface 4.2.0 (4.3.0 available)
+  file_picker_web 4.2.1 (4.2.2 available)
+  gsettings 0.2.8 (0.2.9 available)
+  image 4.12.0 (4.13.1 available)
+  jni 1.1.2 (1.2.1 available)
+  jni_flutter 1.0.4+1 (1.1.0 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  material_ui 1.11.0 (1.11.1 available)
+  test_api 0.7.12 (0.7.15 available)
+  upower 0.7.0 (0.8.0 available)
+  url_launcher_android 6.3.33 (6.3.35 available)
+  wakelock_plus 1.8.0 (1.8.2 available)
+  webview_all 1.5.0 (1.5.2 available)
+  webview_all_android 1.5.0 (1.5.2 available)
+  webview_all_linux 1.5.0 (1.5.2 available)
+  webview_all_ohos 1.5.0 (1.5.2 available)
+  webview_all_web 1.5.0 (1.5.2 available)
+  webview_all_windows 1.5.0 (1.5.2 available)
+  webview_all_wkwebview 1.5.0 (1.5.2 available)
+  webview_platform_interface 1.5.0 (1.5.2 available)
+Got dependencies!
+29 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Building Windows application...                                   286.4s
+√ Built build\windows\x64\runner\Release\openastroara.exe
